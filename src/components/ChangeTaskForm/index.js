@@ -1,3 +1,3 @@
-import ChangeTaskForm from './ChangeTaskForm'
+import { ChangeTaskForm } from './ChangeTaskForm'
 
 export default ChangeTaskForm

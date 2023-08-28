@@ -2,14 +2,14 @@ import { Component } from 'react'
 import PropTypes from 'prop-types'
 import './Task.css'
 
-export default class Task extends Component {
+const SECOND_IN_MILLISECOND = 1000
+
+export class Task extends Component {
   state = {
-    // eslint-disable-next-line react/prop-types,react/destructuring-assignment
     min: this.props.minValue,
-    // eslint-disable-next-line react/destructuring-assignment,react/prop-types
     sec: this.props.secValue,
-    // eslint-disable-next-line react/no-unused-state
     isCounting: false,
+    startTime: null,
   }
 
   static defaultProps = {
@@ -43,7 +43,7 @@ export default class Task extends Component {
   }
 
   secDecrement = () => {
-    const { min, sec, isCounting } = this.state
+    const { min, sec, isCounting, startTime } = this.state
     const { onCheckBoxClick } = this.props
 
     if (min === 0 && sec === 0 && isCounting === true) {
@@ -61,6 +61,14 @@ export default class Task extends Component {
     } else {
       this.minDecrement()
     }
+
+    if (startTime) {
+      const currentTime = new Date()
+      const timeDifference = Math.floor(
+        (currentTime - startTime) / SECOND_IN_MILLISECOND,
+      )
+      return timeDifference
+    }
   }
 
   handlePause = (event) => {
@@ -71,10 +79,14 @@ export default class Task extends Component {
 
   handleStart = (event) => {
     event.stopPropagation()
-    this.setState({ isCounting: true })
+    this.setState({ isCounting: true, startTime: new Date() })
     this.counterID = setInterval(() => {
       this.secDecrement()
-    }, 1000)
+    }, SECOND_IN_MILLISECOND)
+  }
+
+  formatTime = (time) => {
+    return time < 10 ? `0${time}` : time
   }
 
   render() {
@@ -88,14 +100,12 @@ export default class Task extends Component {
     } = this.props
     const { min, sec, isCounting } = this.state
     const buttonTimer = !isCounting ? (
-      /* eslint-disable-next-line jsx-a11y/control-has-associated-label */
       <button
         type="button"
         className="icon icon-play"
         onClick={this.handleStart}
       />
     ) : (
-      /* eslint-disable-next-line jsx-a11y/control-has-associated-label */
       <button
         type="button"
         className="icon icon-pause"
@@ -116,12 +126,14 @@ export default class Task extends Component {
           <span role="presentation" className="title" onClick={onCheckBoxClick}>
             {description}
           </span>
-          <span className="description">
-            {buttonTimer}
-            <span className="description__time-value">
-              {min}:{sec}
+          {checked ? null : (
+            <span className="description">
+              {buttonTimer}
+              <span className="description__time-value">
+                {this.formatTime(min)}:{this.formatTime(sec)}
+              </span>
             </span>
-          </span>
+          )}
           <span className="created">created {timeAfterCreate} ago</span>
         </div>
         <button

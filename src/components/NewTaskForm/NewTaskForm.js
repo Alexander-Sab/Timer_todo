@@ -1,8 +1,10 @@
 import { Component } from 'react'
 import PropTypes from 'prop-types'
+
+import { normalizeWhitespace } from '../utils/utils'
 import './NewTaskForm.css'
 
-export default class NewTaskForm extends Component {
+export class NewTaskForm extends Component {
   state = {
     description: '',
     placeholder: 'What needs to be done?',
@@ -15,7 +17,6 @@ export default class NewTaskForm extends Component {
   }
 
   static propTypes = {
-    // eslint-disable-next-line react/no-unused-prop-types
     addNewItem: PropTypes.func,
   }
 
@@ -29,14 +30,9 @@ export default class NewTaskForm extends Component {
     const { addNewItem } = this.props
     const { description, minValue, secValue } = this.state
 
-    if (event.key === 'Enter') {
-      const trimDescription = description.replace(/ +/g, ' ').trim()
-
-      if (trimDescription === '') {
-        addNewItem('Имя задачи не задано', minValue, secValue)
-      } else {
-        addNewItem(trimDescription, minValue, secValue)
-      }
+    if (event.key === 'Enter' && description !== '') {
+      const trimDescription = normalizeWhitespace(description)
+      addNewItem(trimDescription, minValue, secValue)
 
       this.setState({
         description: '',

@@ -1,17 +1,23 @@
 import { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import { normalizeWhitespace } from '../utils/utils'
 import NewTaskForm from '../NewTaskForm'
 import Footer from '../Footer'
 import TaskList from '../TaskList'
+import {
+  COMPLETED_TASK,
+  EDITING_TASK,
+  ACTIVE_TASK,
+} from '../constants/constants'
 import './App.css'
 
-export default class App extends Component {
+export class App extends Component {
   state = {
     dataStream: [
-      this.createTodoItem('Completed task', 15, 0),
-      this.createTodoItem('Editing task', 15, 0),
-      this.createTodoItem('Active task', 15, 0),
+      this.createTodoItem(COMPLETED_TASK, 15, 0),
+      this.createTodoItem(EDITING_TASK, 15, 0),
+      this.createTodoItem(ACTIVE_TASK, 15, 0),
     ],
     filterData: 'all',
   }
@@ -127,7 +133,7 @@ export default class App extends Component {
 
   createTodoItem(description, minValue, secValue) {
     const id = Date.now() + Math.floor(Math.random() * 10000)
-    const trimDescription = description.replace(/ +/g, ' ').trim()
+    const trimDescription = normalizeWhitespace(description)
     // todo добавить проверку на число
     let minValueNumber = +minValue
     let secValueNumber = +secValue

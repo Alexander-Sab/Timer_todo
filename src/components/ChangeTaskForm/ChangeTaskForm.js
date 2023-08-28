@@ -1,8 +1,10 @@
 import { Component } from 'react'
 import PropTypes from 'prop-types'
+
+import { normalizeWhitespace } from '../utils/utils'
 import './ChangeTaskForm.css'
 
-export default class ChangeTaskForm extends Component {
+export class ChangeTaskForm extends Component {
   state = {
     newDescription: '',
   }
@@ -20,7 +22,7 @@ export default class ChangeTaskForm extends Component {
 
   onDescriptionChange = (event) => {
     this.setState({
-      newDescription: event.target.value.replace(/ +/g, ' ').trim(),
+      newDescription: normalizeWhitespace(event.target.value),
     })
   }
 
