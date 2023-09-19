@@ -13,7 +13,7 @@ export class Task extends Component {
   }
 
   static defaultProps = {
-    description: 'Имя не задано',
+    description: null,
     checked: false,
     timeAfterCreate: () => {},
     onEditClick: () => {},

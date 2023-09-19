@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import './TaskFilter.css'
 
-const TaskFilter = ({ setFilterData }) => {
+export const TaskFilter = ({ setFilterData }) => {
   const [allButtonClicked, setAllButtonClicked] = useState(true)
   const [activeButtonClicked, setActiveButtonClicked] = useState(false)
   const [completedButtonClicked, setCompletedButtonClicked] = useState(false)

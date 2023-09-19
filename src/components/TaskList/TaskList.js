@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types'
 import { formatDistanceToNow } from 'date-fns'
+import clsx from 'clsx'
 
 import Task from '../Task'
 import ChangeTaskForm from '../ChangeTaskForm'
 import './TaskList.css'
 
-const TaskList = ({
+export const TaskList = ({
   taskData,
   filterData,
   onCheckBoxClick,
@@ -13,6 +14,9 @@ const TaskList = ({
   onEditClick,
   onChangeDescription,
 }) => {
+  const FITER_ALL = 'all'
+  const FITER_EDITING = 'editing'
+
   const listElements = taskData.map((item) => {
     const { id, minValue, secValue } = item
 
@@ -24,15 +28,17 @@ const TaskList = ({
       checked = true
     }
     if (item.editing) {
-      classNames = 'editing'
+      classNames = FITER_EDITING
     }
-    if (filterData === 'all') {
+    const combaClassNames = clsx(classNames)
+    if (filterData === FITER_ALL) {
       return (
-        <li key={id} className={classNames}>
+        <li key={id} className={combaClassNames}>
           <Task
             description={item.description}
             timeAfterCreate={timeAfterCreate}
             checked={checked}
+            className={combaClassNames}
             minValue={minValue}
             secValue={secValue}
             onCheckBoxClick={() => {
@@ -55,7 +61,7 @@ const TaskList = ({
         </li>
       )
     }
-    if (classNames === filterData || classNames === 'editing') {
+    if (classNames === filterData || classNames === FITER_EDITING) {
       return (
         <li key={id} className={classNames}>
           <Task

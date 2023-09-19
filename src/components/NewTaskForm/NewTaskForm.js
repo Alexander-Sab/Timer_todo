@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { normalizeWhitespace } from '../utils/utils'
 import './NewTaskForm.css'
 
-const NewTaskForm = ({ addNewItem }) => {
+export const NewTaskForm = ({ addNewItem }) => {
   const [description, setDescription] = useState('')
   const [minValue, setMinValue] = useState('')
   const [secValue, setSecValue] = useState('')

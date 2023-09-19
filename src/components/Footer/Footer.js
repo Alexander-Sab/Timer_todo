@@ -3,7 +3,11 @@ import PropTypes from 'prop-types'
 import TaskFilter from '../TaskFilter'
 import './Footer.css'
 
-const Footer = ({ notCompleetedCount, clearCompleted, setFilterData }) => (
+export const Footer = ({
+  notCompleetedCount,
+  clearCompleted,
+  setFilterData,
+}) => (
   <footer className="footer">
     <span className="todo-count">{`${notCompleetedCount}  items left`}</span>
     <TaskFilter setFilterData={setFilterData} />

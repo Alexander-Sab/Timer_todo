@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { normalizeWhitespace } from '../utils/utils'
 import './ChangeTaskForm.css'
 
-const ChangeTaskForm = ({ description, id, onChangeDescription }) => {
+export const ChangeTaskForm = ({ description, id, onChangeDescription }) => {
   const [newDescription, setNewDescription] = useState('')
 
   const onDescriptionChange = (event) => {
