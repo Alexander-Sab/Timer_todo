@@ -1,154 +1,125 @@
-import { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import './Task.css'
 
 const SECOND_IN_MILLISECOND = 1000
 
-export class Task extends Component {
-  state = {
-    min: this.props.minValue,
-    sec: this.props.secValue,
-    isCounting: false,
-    startTime: null,
-  }
+export const Task = ({
+  onCheckBoxClick,
+  description,
+  timeAfterCreate,
+  onEditClick,
+  onDeletedClick,
+  checked,
+  minValue,
+  secValue,
+}) => {
+  const [min, setMin] = useState(minValue)
+  const [sec, setSec] = useState(secValue)
+  const [isCounting, setIsCounting] = useState(false)
+  const [startTime, setStartTime] = useState(null)
 
-  static defaultProps = {
-    description: null,
-    checked: false,
-    timeAfterCreate: () => {},
-    onEditClick: () => {},
-    onDeletedClick: () => {},
-    onCheckBoxClick: () => {},
-  }
+  useEffect(() => {
+    setMin(minValue)
+    setSec(secValue)
+  }, [minValue, secValue])
 
-  static propTypes = {
-    checked: PropTypes.bool,
-    onCheckBoxClick: PropTypes.func,
-    description: PropTypes.string,
-    timeAfterCreate: PropTypes.string,
-    onEditClick: PropTypes.func,
-    onDeletedClick: PropTypes.func,
-  }
+  useEffect(() => {
+    if (isCounting) {
+      const timer = setInterval(() => {
+        if (sec > 0) {
+          setSec(sec - 1)
+        } else {
+          if (min > 0) {
+            setMin(min - 1)
+            setSec(59)
+          } else {
+            onCheckBoxClick()
+            setIsCounting(false)
+            clearInterval(timer)
+          }
+        }
+      }, SECOND_IN_MILLISECOND)
 
-  componentWillUnmount() {
-    clearInterval(this.counterID)
-  }
-
-  minDecrement = () => {
-    const { min } = this.state
-    this.setState({
-      min: min - 1,
-      sec: 59,
-    })
-  }
-
-  secDecrement = () => {
-    const { min, sec, isCounting, startTime } = this.state
-    const { onCheckBoxClick } = this.props
-
-    if (min === 0 && sec === 0 && isCounting === true) {
-      onCheckBoxClick()
-      clearInterval(this.counterID)
-      this.setState({
-        isCounting: false,
-      })
+      return () => clearInterval(timer)
     }
-    if (sec > 0) {
-      this.setState({
-        sec: sec - 1,
-        isCounting: true,
-      })
-    } else {
-      this.minDecrement()
-    }
+  }, [isCounting, min, sec, onCheckBoxClick])
 
-    if (startTime) {
-      const currentTime = new Date()
-      const timeDifference = Math.floor(
-        (currentTime - startTime) / SECOND_IN_MILLISECOND,
-      )
-      return timeDifference
-    }
-  }
-
-  handlePause = (event) => {
+  const handlePause = (event) => {
     event.stopPropagation()
-    this.setState({ isCounting: false })
-    clearInterval(this.counterID)
+    setIsCounting(false)
   }
 
-  handleStart = (event) => {
+  const handleStart = (event) => {
     event.stopPropagation()
-    this.setState({ isCounting: true, startTime: new Date() })
-    this.counterID = setInterval(() => {
-      this.secDecrement()
-    }, SECOND_IN_MILLISECOND)
+    setIsCounting(true)
+    setStartTime(new Date())
   }
 
-  formatTime = (time) => {
+  const formatTime = (time) => {
     return time < 10 ? `0${time}` : time
   }
 
-  render() {
-    const {
-      onCheckBoxClick,
-      description,
-      timeAfterCreate,
-      onEditClick,
-      onDeletedClick,
-      checked,
-    } = this.props
-    const { min, sec, isCounting } = this.state
-    const buttonTimer = !isCounting ? (
-      <button
-        type="button"
-        className="icon icon-play"
-        onClick={this.handleStart}
+  return (
+    <div className="view">
+      <input
+        className="toggle"
+        type="checkbox"
+        readOnly
+        onClick={onCheckBoxClick}
+        checked={checked}
       />
-    ) : (
-      <button
-        type="button"
-        className="icon icon-pause"
-        onClick={this.handlePause}
-      />
-    )
-    return (
-      <div className="view">
-        <input
-          className="toggle"
-          type="checkbox"
-          readOnly
-          onClick={onCheckBoxClick}
-          checked={checked}
-        />
-
-        <div className="label">
-          <span role="presentation" className="title" onClick={onCheckBoxClick}>
-            {description}
-          </span>
-          {checked ? null : (
-            <span className="description">
-              {buttonTimer}
-              <span className="description__time-value">
-                {this.formatTime(min)}:{this.formatTime(sec)}
-              </span>
+      <div className="label">
+        <span role="presentation" className="title" onClick={onCheckBoxClick}>
+          {description}
+        </span>
+        {!checked && (
+          <span className="description">
+            {!isCounting ? (
+              <button
+                type="button"
+                className="icon icon-play"
+                onClick={handleStart}
+              />
+            ) : (
+              <button
+                type="button"
+                className="icon icon-pause"
+                onClick={handlePause}
+              />
+            )}
+            <span className="description__time-value">
+              {formatTime(min)}:{formatTime(sec)}
             </span>
-          )}
-          <span className="created">created {timeAfterCreate} ago</span>
-        </div>
-        <button
-          type="button"
-          className="icon icon-edit"
-          onClick={onEditClick}
-          aria-label="log out"
-        />
-        <button
-          type="button"
-          className="icon icon-destroy"
-          onClick={onDeletedClick}
-          aria-label="log out"
-        />
+          </span>
+        )}
+        <span className="created">created {timeAfterCreate} ago</span>
       </div>
-    )
-  }
+      <button
+        type="button"
+        className="icon icon-edit"
+        onClick={onEditClick}
+        aria-label="log out"
+      />
+      <button
+        type="button"
+        className="icon icon-destroy"
+        onClick={onDeletedClick}
+        aria-label="log out"
+      />
+    </div>
+  )
 }
+
+Task.propTypes = {
+  onCheckBoxClick: PropTypes.func.isRequired,
+  description: PropTypes.string.isRequired,
+  timeAfterCreate: PropTypes.string.isRequired,
+  onEditClick: PropTypes.func.isRequired,
+  onDeletedClick: PropTypes.func.isRequired,
+  checked: PropTypes.bool.isRequired,
+  minValue: PropTypes.number.isRequired,
+  secValue: PropTypes.number.isRequired,
+}
+
+export default Task
