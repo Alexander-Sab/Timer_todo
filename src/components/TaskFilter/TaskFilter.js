@@ -7,21 +7,24 @@ export const TaskFilter = ({ setFilterData }) => {
   const [activeButtonClicked, setActiveButtonClicked] = useState(false)
   const [completedButtonClicked, setCompletedButtonClicked] = useState(false)
 
-  const onClickButton = (event) => {
-    const buttonClicked = event.target.innerText.toLowerCase()
-    if (buttonClicked === 'all') {
-      setAllButtonClicked(true)
-      setActiveButtonClicked(false)
-      setCompletedButtonClicked(false)
-    } else if (buttonClicked === 'active') {
-      setAllButtonClicked(false)
-      setActiveButtonClicked(true)
-      setCompletedButtonClicked(false)
-    } else {
-      setAllButtonClicked(false)
-      setActiveButtonClicked(false)
-      setCompletedButtonClicked(true)
-    }
+  const handleAllButtonClick = (event) => {
+    setAllButtonClicked(true)
+    setActiveButtonClicked(false)
+    setCompletedButtonClicked(false)
+    setFilterData(event)
+  }
+
+  const handleActiveButtonClick = (event) => {
+    setAllButtonClicked(false)
+    setActiveButtonClicked(true)
+    setCompletedButtonClicked(false)
+    setFilterData(event)
+  }
+
+  const handleCompletedButtonClick = (event) => {
+    setAllButtonClicked(false)
+    setActiveButtonClicked(false)
+    setCompletedButtonClicked(true)
     setFilterData(event)
   }
 
@@ -31,7 +34,7 @@ export const TaskFilter = ({ setFilterData }) => {
         <button
           type="button"
           className={allButtonClicked ? 'selected' : ''}
-          onClick={onClickButton}
+          onClick={handleAllButtonClick}
         >
           All
         </button>
@@ -40,7 +43,7 @@ export const TaskFilter = ({ setFilterData }) => {
         <button
           type="button"
           className={activeButtonClicked ? 'selected' : ''}
-          onClick={onClickButton}
+          onClick={handleActiveButtonClick}
         >
           Active
         </button>
@@ -49,7 +52,7 @@ export const TaskFilter = ({ setFilterData }) => {
         <button
           type="button"
           className={completedButtonClicked ? 'selected' : ''}
-          onClick={onClickButton}
+          onClick={handleCompletedButtonClick}
         >
           Completed
         </button>

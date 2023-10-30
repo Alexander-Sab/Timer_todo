@@ -9,6 +9,7 @@ import {
   COMPLETED_TASK,
   EDITING_TASK,
   ACTIVE_TASK,
+  FILTER_ALL,
 } from '../constants/constants'
 import './App.css'
 
@@ -39,7 +40,7 @@ export const App = (props) => {
     createTodoItem(ACTIVE_TASK, 15, 0),
   ])
 
-  const [filterData, setFilterData] = useState('all')
+  const [filterData, setFilterData] = useState(FILTER_ALL)
 
   const addItem = (description, minValue, secValue) => {
     const newItem = createTodoItem(description, minValue, secValue)
@@ -131,19 +132,13 @@ App.propTypes = {
   filterData: PropTypes.string,
 }
 
+App.propTypes = {
+  dataStream: PropTypes.instanceOf(Array),
+  filterData: PropTypes.string,
+}
 App.defaultProps = {
-  dataStream: [
-    {
-      id: 101,
-      description: 'Синхронизировать список задач с сервером',
-      dateCreate: new Date(),
-      compleeted: false,
-      editing: false,
-      minValue: 15,
-      secValue: 30,
-    },
-  ],
-  filterData: 'all',
+  dataStream: null,
+  filterData: FILTER_ALL,
 }
 
 export default App

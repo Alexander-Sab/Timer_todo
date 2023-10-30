@@ -9,18 +9,28 @@ export const NewTaskForm = ({ addNewItem }) => {
   const [minValue, setMinValue] = useState('')
   const [secValue, setSecValue] = useState('')
 
-  const onDescriptionChange = (event) => {
+  const handleDescriptionChange = (event) => {
     const { name, value } = event.target
     if (name === 'description') {
       setDescription(value)
-    } else if (name === 'minValue') {
+    }
+  }
+
+  const handleMinValueChange = (event) => {
+    const { name, value } = event.target
+    if (name === 'minValue') {
       setMinValue(value)
-    } else if (name === 'secValue') {
+    }
+  }
+
+  const handleSecValueChange = (event) => {
+    const { name, value } = event.target
+    if (name === 'secValue') {
       setSecValue(value)
     }
   }
 
-  const onSubmitForm = (event) => {
+  const handleSubmitForm = (event) => {
     if (event.key === 'Enter' && description !== '') {
       const trimDescription = normalizeWhitespace(description)
       addNewItem(trimDescription, minValue, secValue)
@@ -31,26 +41,26 @@ export const NewTaskForm = ({ addNewItem }) => {
   }
 
   return (
-    <form className="new-todo-form" onKeyPress={onSubmitForm}>
+    <form className="new-todo-form" onKeyPress={handleSubmitForm}>
       <input
         className="new-todo"
         name="description"
         placeholder="What needs to be done?"
-        onChange={onDescriptionChange}
+        onChange={handleDescriptionChange}
         value={description}
       />
       <input
         className="new-todo-form__timer"
         name="minValue"
         placeholder="Min"
-        onChange={onDescriptionChange}
+        onChange={handleMinValueChange}
         value={minValue}
       />
       <input
         className="new-todo-form__timer"
         name="secValue"
         placeholder="Sec"
-        onChange={onDescriptionChange}
+        onChange={handleSecValueChange}
         value={secValue}
       />
     </form>

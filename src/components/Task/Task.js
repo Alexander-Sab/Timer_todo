@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import './Task.css'
 
-const SECOND_IN_MILLISECOND = 1000
-
 export const Task = ({
   onCheckBoxClick,
   description,
@@ -27,23 +25,26 @@ export const Task = ({
   useEffect(() => {
     if (isCounting) {
       const timer = setInterval(() => {
-        if (sec > 0) {
-          setSec(sec - 1)
+        const currentTime = new Date()
+        const elapsedTime = Math.floor((currentTime - startTime) / 1000)
+        const remainingTime = minValue * 60 + secValue - elapsedTime
+
+        if (remainingTime > 0) {
+          const remainingMin = Math.floor(remainingTime / 60)
+          const remainingSec = remainingTime % 60
+
+          setMin(remainingMin)
+          setSec(remainingSec)
         } else {
-          if (min > 0) {
-            setMin(min - 1)
-            setSec(59)
-          } else {
-            onCheckBoxClick()
-            setIsCounting(false)
-            clearInterval(timer)
-          }
+          onCheckBoxClick()
+          setIsCounting(false)
+          clearInterval(timer)
         }
-      }, SECOND_IN_MILLISECOND)
+      }, 1000)
 
       return () => clearInterval(timer)
     }
-  }, [isCounting, min, sec, onCheckBoxClick])
+  }, [isCounting, minValue, secValue, startTime, onCheckBoxClick])
 
   const handlePause = (event) => {
     event.stopPropagation()
